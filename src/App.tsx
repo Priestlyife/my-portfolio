@@ -94,7 +94,7 @@ export default function App() {
     <>
       <Cursor />
       <AnimatePresence>{loading && !onDesignPage && <Preloader done={done} fast={lite} />}</AnimatePresence>
-      <Nav onToggleTheme={toggleTheme} />
+      <Nav onToggleTheme={toggleTheme} designActive={onDesignPage} />
       {designProject ? (
         <Suspense fallback={null}>
           <DesignCase project={designProject} />
