@@ -23,7 +23,12 @@ export default function Nav({ onToggleTheme }: { onToggleTheme: (e: React.MouseE
   }, [open])
 
   const goHome = (hash?: string) => {
-    // leaving a case-study page → clear the page route, restore section anchors
+    // Design routes are real pages; let their links navigate normally.
+    if (hash?.startsWith("#/")) {
+      setOpen(false)
+      return
+    }
+    // leaving a case-study or gallery page → restore homepage section anchors
     if (window.location.hash.startsWith("#/")) {
       const target = hash ?? ""
       if (target) sessionStorage.setItem("pa-scroll", target)

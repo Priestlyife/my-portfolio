@@ -7,42 +7,48 @@ import { useLite, applyLite, probePerformance } from "./components/lite"
 import { DESIGN_PROJECTS } from "./data/content"
 
 const DesignCase = lazy(() => import("./pages/DesignCase"))
+const DesignGallery = lazy(() => import("./pages/DesignGallery"))
 
 function useDesignRoute() {
   const read = () => {
-    const m = window.location.hash.match(/^#\/design\/([\w-]+)/)
-    return m ? m[1] : null
+    const hash = window.location.hash
+    const m = hash.match(/^#\/design\/([\w-]+)\/?$/)
+    return { slug: m ? m[1] : null, gallery: hash === "#/design" || hash === "#/design/" }
   }
-  const [slug, setSlug] = useState<string | null>(read)
+  const [route, setRoute] = useState(read)
 
   useEffect(() => {
-    const onHash = () => setSlug(read())
+    const onHash = () => setRoute(read())
     window.addEventListener("hashchange", onHash)
     return () => window.removeEventListener("hashchange", onHash)
   }, [])
 
-  return DESIGN_PROJECTS.find((p) => p.slug === slug) ?? null
+  return {
+    project: DESIGN_PROJECTS.find((p) => p.slug === route.slug) ?? null,
+    gallery: route.gallery,
+  }
 }
 
 export default function App() {
   const [loading, setLoading] = useState(true)
   const { toggleTheme, wipeEl } = useThemeWipe()
   const done = useCallback(() => setLoading(false), [])
-  const designProject = useDesignRoute()
+  const { project: designProject, gallery: onDesignGallery } = useDesignRoute()
   const onCase = Boolean(designProject)
+  const onDesignPage = onCase || onDesignGallery
   const lite = useLite()
 
   /* Case pages don't need the home sections — don't even mount them.
      And while the browser is here, warm every screenshot in the
      background so gallery scrolling never waits on the network. */
   useEffect(() => {
-    document.documentElement.dataset.view = onCase ? "case" : "home"
+    document.documentElement.dataset.view = onCase ? "case" : onDesignGallery ? "design" : "home"
     if (!onCase || !designProject) return
     designProject.shots.forEach((s) => {
       const img = new Image()
       img.src = s.src
     })
-  }, [onCase, designProject])
+  }, [onCase, onDesignGallery, designProject])
 
   /* lite mode: instantly for known-weak devices, plus a live frame-rate
      probe that flips it on if the device struggles in practice */
@@ -87,11 +93,15 @@ export default function App() {
   return (
     <>
       <Cursor />
-      <AnimatePresence>{loading && !onCase && <Preloader done={done} fast={lite} />}</AnimatePresence>
+      <AnimatePresence>{loading && !onDesignPage && <Preloader done={done} fast={lite} />}</AnimatePresence>
       <Nav onToggleTheme={toggleTheme} />
       {designProject ? (
         <Suspense fallback={null}>
           <DesignCase project={designProject} />
+        </Suspense>
+      ) : onDesignGallery ? (
+        <Suspense fallback={null}>
+          <DesignGallery />
         </Suspense>
       ) : (
         <Home ready={!loading || onCase} />
