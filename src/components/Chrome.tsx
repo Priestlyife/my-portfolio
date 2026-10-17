@@ -121,7 +121,7 @@ export function Preloader({ done, fast = false }: { done: () => void; fast?: boo
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [done])
+  }, [done, fast])
 
   return (
     <motion.div
