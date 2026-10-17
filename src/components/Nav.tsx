@@ -4,7 +4,7 @@ import { NAV_ITEMS } from "../data/content"
 import { ThemeToggle } from "./Chrome"
 import { EASE } from "./Reveal"
 
-export default function Nav({ onToggleTheme }: { onToggleTheme: (e: React.MouseEvent) => void }) {
+export default function Nav({ onToggleTheme, designActive = false }: { onToggleTheme: (e: React.MouseEvent) => void; designActive?: boolean }) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -23,7 +23,12 @@ export default function Nav({ onToggleTheme }: { onToggleTheme: (e: React.MouseE
   }, [open])
 
   const goHome = (hash?: string) => {
-    // leaving a case-study page → clear the page route, restore section anchors
+    // Design routes are real pages; let their links navigate normally.
+    if (hash?.startsWith("#/")) {
+      setOpen(false)
+      return
+    }
+    // leaving a case-study or gallery page → restore homepage section anchors
     if (window.location.hash.startsWith("#/")) {
       const target = hash ?? ""
       if (target) sessionStorage.setItem("pa-scroll", target)
@@ -46,7 +51,7 @@ export default function Nav({ onToggleTheme }: { onToggleTheme: (e: React.MouseE
             <ul className="nav-links">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
-                  <a href={item.href} onClick={() => goHome(item.href)}>{item.label}</a>
+                  <a href={item.href} onClick={() => goHome(item.href)} className={item.label === "Design" && designActive ? "active" : undefined} aria-current={item.label === "Design" && designActive ? "page" : undefined}>{item.label}</a>
                 </li>
               ))}
             </ul>
@@ -94,7 +99,7 @@ export default function Nav({ onToggleTheme }: { onToggleTheme: (e: React.MouseE
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 + i * 0.07, duration: 0.5, ease: EASE }}
               >
-                <a href={item.href} onClick={() => goHome(item.href)}>
+                <a href={item.href} onClick={() => goHome(item.href)} aria-current={item.label === "Design" && designActive ? "page" : undefined}>
                   <span className="mono">0{i + 1}</span>
                   {item.label}
                 </a>

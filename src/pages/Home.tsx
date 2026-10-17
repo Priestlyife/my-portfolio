@@ -74,7 +74,7 @@ export default function Home({ ready }: { ready: boolean }) {
       <Intro />
       <Approach />
       <Work />
-      <Design />
+      <Design preview />
       <Products />
       <Journal />
       <About />

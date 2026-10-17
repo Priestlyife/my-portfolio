@@ -71,9 +71,10 @@ function DesignProjectGroup({ project, flip }: { project: DesignProject; flip: b
   )
 }
 
-export default function Design() {
+export default function Design({ preview = false }: { preview?: boolean }) {
+  const projects = preview ? DESIGN_PROJECTS.slice(0, 2) : DESIGN_PROJECTS
   return (
-    <section className="section" id="design">
+    <section className="section" id={preview ? "design-preview" : "design"}>
       <div className="wrap">
         <SectionHead index="04" label="Design" title="UI/UX & visual work" />
         <div style={{ maxWidth: "46rem", marginBottom: "3.5rem" }}>
@@ -91,15 +92,24 @@ export default function Design() {
           </Rise>
         </div>
 
-        {DESIGN_PROJECTS.map((p, i) => (
+        {projects.map((p, i) => (
           <DesignProjectGroup key={p.slug} project={p} flip={i % 2 === 1} />
         ))}
 
-        <Rise>
-          <p className="mono muted" style={{ borderTop: "1px solid var(--line)", paddingTop: "2rem" }}>
-            More design projects will be added as case studies are prepared.
-          </p>
-        </Rise>
+        {preview ? (
+          <Rise>
+            <div style={{ borderTop: "1px solid var(--line)", paddingTop: "2rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" }}>
+              <p className="mono muted">Explore the complete collection of UI/UX and visual design case studies.</p>
+              <a href="#/design" className="btn small solid" data-hover>View All Designs <span className="arrow">→</span></a>
+            </div>
+          </Rise>
+        ) : (
+          <Rise>
+            <p className="mono muted" style={{ borderTop: "1px solid var(--line)", paddingTop: "2rem" }}>
+              More design projects will be added as case studies are prepared.
+            </p>
+          </Rise>
+        )}
       </div>
     </section>
   )

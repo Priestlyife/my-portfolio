@@ -266,7 +266,7 @@ export const SKILLS_PRO = [
 
 export const NAV_ITEMS = [
   { label: "Work", href: "#work" },
-  { label: "Design", href: "#design" },
+  { label: "Design", href: "#/design" },
   { label: "Products", href: "#products" },
   { label: "About", href: "#about" },
   { label: "Journal", href: "#journal" },

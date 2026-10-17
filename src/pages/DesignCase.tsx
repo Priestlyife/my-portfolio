@@ -38,14 +38,14 @@ export default function DesignCase({ project }: { project: DesignProject }) {
       <section className="cs-masthead">
         <div className="wrap">
           <motion.a
-            href="#work"
+            href="#/design"
             className="mono cs-back"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: EASE }}
             data-hover
           >
-            ← Back to portfolio
+            ← Back to designs
           </motion.a>
           <MaskReveal>
             <span className="mono" style={{ color: project.accent }}>
@@ -154,7 +154,7 @@ export default function DesignCase({ project }: { project: DesignProject }) {
             </h2>
           </MaskReveal>
           <div className="hero-ctas" style={{ marginTop: "1.8rem" }}>
-            <a href="#design" className="btn solid" data-hover>
+            <a href="#/design" className="btn solid" data-hover>
               More Design Work <span className="arrow">→</span>
             </a>
             <a href="#contact" className="btn ghost" data-hover>
